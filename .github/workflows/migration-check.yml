@@ -1,0 +1,34 @@
+name: Migration check
+
+on:
+  pull_request:
+    paths:
+      - "migrations/**"
+      - ".migrationguard.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  migration-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history, so we can diff against the base branch.
+          # A shallow clone cannot compute origin/<base>...HEAD.
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install MigrationGuard
+        run: pip install .
+
+      - name: Check changed migrations
+        run: >
+          migration-guard check migrations
+          --changed-since origin/${{ github.base_ref }}
+          --format github

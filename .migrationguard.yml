@@ -1,0 +1,14 @@
+# MigrationGuard policy. See README "Configuration".
+version: 1
+dialect: postgres
+
+# Findings at or above this severity block the pull request.
+fail_on: HIGH
+
+# Old migrations that were already reviewed and applied.
+ignore_paths:
+  - "migrations/legacy/**"
+
+rules:
+  MG006:
+    severity: HIGH   # this team treats blocking index builds as must-fix

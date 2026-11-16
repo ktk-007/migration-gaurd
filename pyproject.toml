@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "migration-guard"
+version = "0.1.0"
+description = "CI check that flags risky PostgreSQL migrations before review."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "KTK" }]
+dependencies = [
+    "pglast>=8.0",
+    "typer>=0.12",
+    "pydantic>=2.6",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.5"]
+
+[project.scripts]
+migration-guard = "migration_guard.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["migration_guard*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["B008"]  # Typer uses function calls in argument defaults by design
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff.lint.isort]
+known-first-party = ["migration_guard", "conftest"]
